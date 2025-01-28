@@ -1,14 +1,50 @@
-// import { useState } from 'react'
+import { useEffect, useState } from "react";
+import * as articlesService from "./components/services/api";
+import toast from "react-hot-toast";
 import s from "./App.module.css";
-
-import Header from "./components/Header/Header";
+import SearchBar from "./components/SearchBar/SearchBar";
+import ImageGallery from "./components/ImageGallery/ImageGallery";
 
 function App() {
-  // const [count, setCount] = useState(0)
+  const [images, setImages] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
+  const [isError, setIsError] = useState(false);
+  const [query, setQuery] = useState("");
+  const [page, setPage] = useState(0);
+
+  useEffect(() => {
+    // axios.get('http://hn.algolia.com/api/v1/search?query=react').then(res => setArticles(res.data.hits));
+    if (!images) return;
+    const getData = async () => {
+      try {
+        setIsLoading(true);
+        setIsError(false);
+        const { hits } = await articlesService.fetchArticles(query, page);
+        setImages((prev) => [...prev, ...hits]);
+      } catch {
+        toast.error("Server is dead!");
+        setIsError(true);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+    getData();
+  }, [query, page]);
+
+  const handleSetQuery = (newQuery) => {
+    console.log(newQuery);
+    setQuery(newQuery);
+    setImages([]);
+    setPage(0);
+  };
 
   return (
     <div className={s.flexContainer}>
-      <Header />
+      <SearchBar onSubmit={handleSetQuery} />
+      <ImageGallery images={images} />
+      {isLoading && <h2>Loading...</h2>}
+      {isError && <h2>Something went wrong! Try again later...</h2>}
+      <button onClick={() => setPage((prev) => prev + 1)}>Load more</button>
     </div>
   );
 }
