@@ -16,6 +16,9 @@ const SearchBar = ({ onSubmit }) => {
           onChange={(e) => setValue(e.target.value)}
           value={value}
           type="text"
+          autoComplete="off"
+          autoFocus
+          placeholder="Search images and photos"
         />
         <button>Search</button>
       </form>

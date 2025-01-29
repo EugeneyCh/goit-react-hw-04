@@ -1,15 +1,15 @@
 import ImageCard from "../ImageCard/ImageCard";
 
-function ImageGallery() {
+function ImageGallery({ images }) {
   return (
     <>
       <ul>
-        {/* Набір елементів списку із зображеннями */}
-        <li>
-          <ImageCard />
-        </li>
+        {images.map((item) => (
+          <li key={item.id}>
+            <ImageCard item={item} />
+          </li>
+        ))}
       </ul>
-      ;
     </>
   );
 }
