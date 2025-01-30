@@ -10,17 +10,16 @@ function App() {
   const [isLoading, setIsLoading] = useState(false);
   const [isError, setIsError] = useState(false);
   const [query, setQuery] = useState("");
-  const [page, setPage] = useState(0);
+  const [page, setPage] = useState(3);
 
   useEffect(() => {
-    // axios.get('http://hn.algolia.com/api/v1/search?query=react').then(res => setArticles(res.data.hits));
-    if (!images) return;
+    if (!query) return;
     const getData = async () => {
       try {
         setIsLoading(true);
         setIsError(false);
-        const { hits } = await articlesService.fetchArticles(query, page);
-        setImages((prev) => [...prev, ...hits]);
+        const { data } = await articlesService.fetchArticles(query, page);
+        setImages((prev) => [...prev, ...data]);
       } catch {
         toast.error("Server is dead!");
         setIsError(true);
@@ -31,8 +30,9 @@ function App() {
     getData();
   }, [query, page]);
 
+  console.log(images);
   const handleSetQuery = (newQuery) => {
-    console.log(newQuery);
+    // console.log(newQuery);
     setQuery(newQuery);
     setImages([]);
     setPage(0);
