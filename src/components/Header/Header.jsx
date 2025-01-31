@@ -5,8 +5,11 @@ import s from "./Header.module.css";
 function Header({ searchWord }) {
   return (
     <>
-      <header className={s.header}>
+      <header className={s.searchbar}>
         <form className={s.searchForm}>
+          <button type="submit">
+            <FaSearch className={s.icon} size="20" />
+          </button>
           <input
             className={s.input}
             type="text"
@@ -15,9 +18,6 @@ function Header({ searchWord }) {
             autoFocus
             placeholder="Search images and photos"
           />
-          <button type="submit">
-            <FaSearch className={s.icon} size="20" />
-          </button>
         </form>
       </header>
     </>

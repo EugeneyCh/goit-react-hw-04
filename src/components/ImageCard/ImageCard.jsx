@@ -1,8 +1,9 @@
-function ImageCard({ urls, alt_description }) {
-  console.log(urls);
+import s from "./ImageCard.module.css";
+
+function ImageCard({ item }) {
   return (
-    <div>
-      <img src={urls.thumb} alt={alt_description} />
+    <div className={s.galleryItem}>
+      <img src={item.urls.regular} alt={item.alt_description} />
     </div>
   );
 }

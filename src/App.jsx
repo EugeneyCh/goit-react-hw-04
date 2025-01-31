@@ -18,8 +18,8 @@ function App() {
       try {
         setIsLoading(true);
         setIsError(false);
-        const { data } = await articlesService.fetchArticles(query, page);
-        setImages((prev) => [...prev, ...data]);
+        const { results } = await articlesService.fetchArticles(query, page);
+        setImages((prev) => [...prev, ...results]);
       } catch {
         toast.error("Server is dead!");
         setIsError(true);
@@ -35,7 +35,7 @@ function App() {
     // console.log(newQuery);
     setQuery(newQuery);
     setImages([]);
-    setPage(0);
+    setPage(1);
   };
 
   return (
@@ -44,7 +44,15 @@ function App() {
       <ImageGallery images={images} />
       {isLoading && <h2>Loading...</h2>}
       {isError && <h2>Something went wrong! Try again later...</h2>}
-      <button onClick={() => setPage((prev) => prev + 1)}>Load more</button>
+      {!isLoading && images && (
+        <button
+          type="button"
+          className={s.button}
+          onClick={() => setPage((prev) => prev + 1)}
+        >
+          Load More
+        </button>
+      )}
     </div>
   );
 }

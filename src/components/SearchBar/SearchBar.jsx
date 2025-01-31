@@ -1,3 +1,5 @@
+import { FaSearch } from "react-icons/fa";
+import s from "./SearchBar.module.css";
 import { useState } from "react";
 
 const SearchBar = ({ onSubmit }) => {
@@ -10,9 +12,10 @@ const SearchBar = ({ onSubmit }) => {
   };
 
   return (
-    <header>
-      <form onSubmit={handleSubmit}>
+    <header className={s.searchbar}>
+      <form className={s.searchForm} onSubmit={handleSubmit}>
         <input
+          className={s.input}
           onChange={(e) => setValue(e.target.value)}
           value={value}
           type="text"
@@ -20,7 +23,9 @@ const SearchBar = ({ onSubmit }) => {
           autoFocus
           placeholder="Search images and photos"
         />
-        <button>Search</button>
+        <button type="submit">
+          <FaSearch className={s.icon} size="20" />
+        </button>
       </form>
     </header>
   );
