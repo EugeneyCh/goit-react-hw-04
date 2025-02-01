@@ -40,11 +40,11 @@ function App() {
 
   return (
     <div className={s.flexContainer}>
-      <SearchBar onSubmit={handleSetQuery} />
+      <SearchBar onSubmit={handleSetQuery} query={query} />
       <ImageGallery images={images} />
       {isLoading && <h2>Loading...</h2>}
       {isError && <h2>Something went wrong! Try again later...</h2>}
-      {!isLoading && images && (
+      {!isLoading && images.length > 0 && (
         <button
           type="button"
           className={s.button}
