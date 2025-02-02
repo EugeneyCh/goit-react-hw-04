@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Modal from "react-modal";
 import * as articlesService from "./components/services/api";
 import toast from "react-hot-toast";
@@ -26,8 +26,7 @@ const customStyles = {
   },
 };
 
-Modal.setAppElement("#root"); // Для доступності
-
+Modal.setAppElement("#root");
 function App() {
   const [images, setImages] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
@@ -37,16 +36,15 @@ function App() {
   const [totalPages, setTotalPages] = useState(0);
   const [modalIsOpen, setIsOpen] = useState(false);
   const [selectedImage, setSelectedImage] = useState(null);
+  const lastImageRef = useRef(null);
 
   useEffect(() => {
     if (!query) return;
-    // const controller = new AbortController();
     const getData = async () => {
       try {
         setIsLoading(true);
         setIsError(false);
         const { data } = await articlesService.fetchArticles(query, page);
-        // console.log(results, totPages);
         setImages((prev) => [...prev, ...data.results]);
         setTotalPages(data.total_pages);
       } catch {
@@ -59,6 +57,12 @@ function App() {
     getData();
   }, [query, page]);
 
+  useEffect(() => {
+    if (page > 1 && lastImageRef.current) {
+      lastImageRef.current.scrollIntoView({ behavior: "smooth" });
+    }
+  }, [images, page]);
+
   const handleSetQuery = (newQuery) => {
     if (newQuery.trim() === query.trim()) return;
     setQuery(newQuery);
@@ -67,10 +71,6 @@ function App() {
   };
   const handleLoadMore = () => {
     setPage((prev) => prev + 1);
-    window.scrollBy({
-      top: window.innerHeight,
-      behavior: "smooth",
-    });
   };
 
   function openModal(image) {
@@ -104,7 +104,6 @@ function App() {
             src={selectedImage.urls.regular}
             alt={selectedImage.alt_description}
             className={s.modalImage}
-            onClick={closeModal}
           />
         )}
       </Modal>

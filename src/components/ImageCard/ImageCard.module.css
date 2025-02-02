@@ -1,6 +1,5 @@
 .galleryItem {
     position: relative;
-    /* width: 100%; */
     height: 260px;
     overflow: hidden;
     display: flex;
