@@ -72,7 +72,7 @@ function App() {
       const timeoutId = setTimeout(() => {
         const element = document.getElementById(firstNewImageRef.current);
         if (element) {
-          const yOffset = -100; // Зміщення на 100 пікселів
+          const yOffset = -100;
           const y =
             element.getBoundingClientRect().top + window.pageYOffset + yOffset;
 
@@ -81,9 +81,9 @@ function App() {
             behavior: "smooth",
           });
         }
-      }, 500); // Чекаємо 500 мс для гарантії, що зображення завантажились
+      }, 500);
 
-      return () => clearTimeout(timeoutId); // Очищення timeout якщо компонент перерисовується
+      return () => clearTimeout(timeoutId);
     }
   }, [images, page]);
 
