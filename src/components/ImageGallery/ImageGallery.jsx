@@ -5,16 +5,11 @@ function ImageGallery({ images }) {
   return (
     <>
       <ul className={s.imageGallery}>
-        {images.map(
-          (item) => (
-            console.log(item),
-            (
-              <li className={s.imageCard} key={item.id}>
-                <ImageCard item={item} />
-              </li>
-            )
-          )
-        )}
+        {images.map((item) => (
+          <li className={s.imageCard} key={item.id}>
+            <ImageCard item={item} />
+          </li>
+        ))}
       </ul>
     </>
   );

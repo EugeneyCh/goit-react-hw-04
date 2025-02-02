@@ -37,6 +37,9 @@
 }
 
 .searchForm .button {
+    /* position: absolute;
+    left: 0; */
+
     display: inline-block;
     width: 48px;
     height: 48px;

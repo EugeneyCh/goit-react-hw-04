@@ -14,6 +14,9 @@ const SearchBar = ({ onSubmit }) => {
   return (
     <header className={s.searchbar}>
       <form className={s.searchForm} onSubmit={handleSubmit}>
+        <button className={s.button} type="submit">
+          <FaSearch className={s.icon} />
+        </button>
         <input
           className={s.input}
           onChange={(e) => setValue(e.target.value)}
@@ -23,9 +26,6 @@ const SearchBar = ({ onSubmit }) => {
           autoFocus
           placeholder="Search images and photos"
         />
-        <button type="submit">
-          <FaSearch className={s.icon} size="20" />
-        </button>
       </form>
     </header>
   );
