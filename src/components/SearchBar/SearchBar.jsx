@@ -1,14 +1,29 @@
 import { FaSearch } from "react-icons/fa";
 import s from "./SearchBar.module.css";
 import { useState } from "react";
+import toast from "react-hot-toast";
 
 const SearchBar = ({ onSubmit }) => {
   const [value, setValue] = useState("");
+  const [previousQuery, setPreviousQuery] = useState("");
 
   const handleSubmit = (e) => {
     e.preventDefault();
+    const trimmedValue = value.trim();
 
-    onSubmit(value);
+    if (trimmedValue === "") {
+      toast.error("Please enter a search query.");
+      return;
+    }
+
+    if (trimmedValue === previousQuery) {
+      toast.error("You’ve already searched for this.");
+      return;
+    }
+
+    onSubmit(trimmedValue);
+    setPreviousQuery(trimmedValue);
+    setValue("");
   };
 
   return (

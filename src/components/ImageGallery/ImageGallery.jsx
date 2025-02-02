@@ -9,9 +9,9 @@ function ImageGallery({ images, openModal }) {
           className={s.imageCard}
           key={item.id}
           id={item.id}
-          onClick={() => openModal(item)}
+          // onClick={() => openModal(item)}
         >
-          <ImageCard item={item} />
+          <ImageCard item={item} openModal={openModal} />
         </li>
       ))}
     </ul>
