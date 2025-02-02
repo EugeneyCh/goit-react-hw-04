@@ -27,6 +27,7 @@ const customStyles = {
 };
 
 Modal.setAppElement("#root");
+
 function App() {
   const [images, setImages] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
@@ -36,15 +37,23 @@ function App() {
   const [totalPages, setTotalPages] = useState(0);
   const [modalIsOpen, setIsOpen] = useState(false);
   const [selectedImage, setSelectedImage] = useState(null);
-  const lastImageRef = useRef(null);
+
+  const firstNewImageRef = useRef(null);
 
   useEffect(() => {
     if (!query) return;
+
     const getData = async () => {
       try {
         setIsLoading(true);
         setIsError(false);
+
         const { data } = await articlesService.fetchArticles(query, page);
+
+        if (page > 1 && data.results.length > 0) {
+          firstNewImageRef.current = data.results[0].id;
+        }
+
         setImages((prev) => [...prev, ...data.results]);
         setTotalPages(data.total_pages);
       } catch {
@@ -54,12 +63,27 @@ function App() {
         setIsLoading(false);
       }
     };
+
     getData();
   }, [query, page]);
 
   useEffect(() => {
-    if (page > 1 && lastImageRef.current) {
-      lastImageRef.current.scrollIntoView({ behavior: "smooth" });
+    if (firstNewImageRef.current && page > 1) {
+      const timeoutId = setTimeout(() => {
+        const element = document.getElementById(firstNewImageRef.current);
+        if (element) {
+          const yOffset = -100; // Зміщення на 100 пікселів
+          const y =
+            element.getBoundingClientRect().top + window.pageYOffset + yOffset;
+
+          window.scrollTo({
+            top: y,
+            behavior: "smooth",
+          });
+        }
+      }, 500); // Чекаємо 500 мс для гарантії, що зображення завантажились
+
+      return () => clearTimeout(timeoutId); // Очищення timeout якщо компонент перерисовується
     }
   }, [images, page]);
 
@@ -69,19 +93,20 @@ function App() {
     setImages([]);
     setPage(1);
   };
+
   const handleLoadMore = () => {
     setPage((prev) => prev + 1);
   };
 
-  function openModal(image) {
+  const openModal = (image) => {
     setSelectedImage(image);
     setIsOpen(true);
-  }
+  };
 
-  function closeModal() {
+  const closeModal = () => {
     setIsOpen(false);
     setSelectedImage(null);
-  }
+  };
 
   const handleOverlayClick = (event) => {
     if (event.target === event.currentTarget) {
@@ -107,12 +132,15 @@ function App() {
           />
         )}
       </Modal>
+
       <SearchBar onSubmit={handleSetQuery} query={query} />
+
       {isError ? (
         <ErrorMessage />
       ) : (
         <ImageGallery images={images} openModal={openModal} />
       )}
+
       {isLoading && (
         <DNA
           visible={true}
@@ -123,6 +151,7 @@ function App() {
           wrapperClass="dna-wrapper"
         />
       )}
+
       {!isLoading && images.length > 0 && page < totalPages && (
         <button type="button" className={s.button} onClick={handleLoadMore}>
           Load More
