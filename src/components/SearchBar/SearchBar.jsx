@@ -18,6 +18,7 @@ const SearchBar = ({ onSubmit }) => {
 
     if (trimmedValue === previousQuery) {
       toast.error("You’ve already searched for this.");
+      setValue("");
       return;
     }
 
