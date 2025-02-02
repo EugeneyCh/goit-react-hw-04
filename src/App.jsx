@@ -1,10 +1,32 @@
 import { useEffect, useState } from "react";
+import Modal from "react-modal";
 import * as articlesService from "./components/services/api";
 import toast from "react-hot-toast";
 import s from "./App.module.css";
 import SearchBar from "./components/SearchBar/SearchBar";
 import ImageGallery from "./components/ImageGallery/ImageGallery";
 import { DNA } from "react-loader-spinner";
+import ErrorMessage from "./components/ErrorMessage/ErrorMessage";
+
+const customStyles = {
+  content: {
+    top: "50%",
+    left: "50%",
+    right: "auto",
+    bottom: "auto",
+    marginRight: "-50%",
+    transform: "translate(-50%, -50%)",
+    padding: "0",
+    border: "none",
+    background: "transparent",
+    overflow: "hidden",
+  },
+  overlay: {
+    backgroundColor: "rgba(0, 0, 0, 0.8)",
+  },
+};
+
+Modal.setAppElement("#root"); // Для доступності
 
 function App() {
   const [images, setImages] = useState([]);
@@ -13,6 +35,8 @@ function App() {
   const [query, setQuery] = useState("");
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(0);
+  const [modalIsOpen, setIsOpen] = useState(false);
+  const [selectedImage, setSelectedImage] = useState(null);
 
   useEffect(() => {
     if (!query) return;
@@ -49,10 +73,47 @@ function App() {
     });
   };
 
+  function openModal(image) {
+    setSelectedImage(image);
+    setIsOpen(true);
+  }
+
+  function closeModal() {
+    setIsOpen(false);
+    setSelectedImage(null);
+  }
+
+  const handleOverlayClick = (event) => {
+    if (event.target === event.currentTarget) {
+      closeModal();
+    }
+  };
+
   return (
     <div className={s.flexContainer}>
+      <Modal
+        isOpen={modalIsOpen}
+        onRequestClose={closeModal}
+        style={customStyles}
+        contentLabel="Image Modal"
+        shouldCloseOnOverlayClick={true}
+        onClick={handleOverlayClick}
+      >
+        {selectedImage && (
+          <img
+            src={selectedImage.urls.regular}
+            alt={selectedImage.alt_description}
+            className={s.modalImage}
+            onClick={closeModal}
+          />
+        )}
+      </Modal>
       <SearchBar onSubmit={handleSetQuery} query={query} />
-      <ImageGallery images={images} />
+      {isError ? (
+        <ErrorMessage />
+      ) : (
+        <ImageGallery images={images} openModal={openModal} />
+      )}
       {isLoading && (
         <DNA
           visible={true}
@@ -63,7 +124,6 @@ function App() {
           wrapperClass="dna-wrapper"
         />
       )}
-      {isError && <h2>Something went wrong! Try again later...</h2>}
       {!isLoading && images.length > 0 && page < totalPages && (
         <button type="button" className={s.button} onClick={handleLoadMore}>
           Load More
